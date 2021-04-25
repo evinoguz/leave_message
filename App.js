@@ -2,8 +2,7 @@ import React from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from "./src/screens/DrawerContent";
-
-import MainTab from "./src/screens/MainTab"
+import MainTab from "./src/screens/MainTab";
 
 const Drawer = createDrawerNavigator();
 const App = () => {

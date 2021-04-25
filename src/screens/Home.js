@@ -1,12 +1,12 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, BottomSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions } from "react-native";
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AppIntroSlider from 'react-native-app-intro-slider';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get("screen");
-
 class Home extends Component {
     constructor() {
         super();
@@ -15,6 +15,7 @@ class Home extends Component {
             files: [],
         };
     }
+
     componentDidMount() {
         axios.get(`https://recepgumus.com/api`)
             .then(response => {
@@ -27,10 +28,50 @@ class Home extends Component {
             <Card key={Id} data={items} />
         );
     }
+    renderInner = () => (
+        <View style={styles.panel}>
+            <TextInput secureTextEntry={true}
+                placeholder="Password"
+                placeholderTextColor="#cccccc"
+                autoCorrect={false}
+                style={styles.password}
+            />
+            <TouchableOpacity
+                style={styles.panelButton}>
+                <Text style={styles.panelButtonTitle}>Signin</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.panelButton}
+                onPress={() => this.bs.current.snapTo(1)}>
+                <Text style={styles.panelButtonTitle}>Cancel</Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    renderHeader = () => (
+        <View style={styles.header}>
+            <View style={styles.panelHeader}>
+                <View style={styles.panelHandle} />
+            </View>
+        </View>
+    );
+
+    bs = React.createRef();
+    fall = new Animated.Value(1);
 
     render() {
+
         return (
             <View style={{ flex: 1, marginTop: 10 }}>
+                <BottomSheet
+                    ref={this.bs}
+                    snapPoints={[330, 0]}
+                    renderContent={this.renderInner}
+                    renderHeader={this.renderHeader}
+                    initialSnap={1}
+                    callbackNode={this.fall}
+                    enabledGestureInteraction={true}
+                />
                 <View>
                     <TextInput placeholder="Share a youtube link or any text..." style={styles.input}
                         numberOfLines={10}
@@ -46,12 +87,17 @@ class Home extends Component {
                     </Text>
                     </TouchableOpacity>
                     <Text style={{ color: "red", textAlign: "center", fontSize: 12 }}>Share file with password (max:1GB)</Text>
-                    <TextInput placeholder="Password" style={styles.password}
+                    <TextInput secureTextEntry={true}
+                        autoCorrect={false}
+                        placeholder="Password" style={styles.password}
                         placeholderTextColor="#cccccc"
                     >
                     </TextInput>
                     <TouchableOpacity disabled={true} style={styles.file}>
                         <Text>Share Here </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
+                        <Text>Video tıkla</Text>
                     </TouchableOpacity>
                 </View>
                 <ScrollView >
@@ -66,13 +112,22 @@ const styles = StyleSheet.create({
         height: 80,
         margin: 8,
         borderWidth: 1,
-        textAlignVertical: 'top'
+        borderRadius: 10,
+        borderColor: "#cccccc",
+        textAlignVertical: 'top',
+        color: "#05375a",
+        paddingLeft: 10,
     },
     password: {
         marginTop: 15,
         margin: 8,
         borderWidth: 1,
-        textAlignVertical: 'top'
+        borderRadius: 10,
+        borderColor: "#cccccc",
+        textAlignVertical: 'top',
+        color: "#05375a",
+        paddingLeft: 10,
+
     },
     file: {
         height: 50,
@@ -81,6 +136,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#39bf5a",
         padding: 10,
+        borderRadius: 10,
     },
     click: {
         height: 80,
@@ -88,7 +144,81 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#cccccc",
         padding: 10,
-
+    },
+    container: {
+        flex: 1,
+    },
+    commandButton: {
+        padding: 15,
+        borderRadius: 10,
+        backgroundColor: '#FF6347',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    panel: {
+        padding: 20,
+        backgroundColor: '#FFFFFF',
+        paddingTop: 20,
+        height:"100%",
+        
+    },
+    header: {
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#333333',
+        shadowOffset: { width: -1, height: -3 },
+        shadowRadius: 2,
+        shadowOpacity: 0.4,
+        // elevation: 5,
+        paddingTop: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    panelHeader: {
+        alignItems: 'center',
+    },
+    panelHandle: {
+        width: 40,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#00000040',
+        marginBottom: 10,
+    },
+    panelTitle: {
+        fontSize: 27,
+        height: 35,
+    },
+    panelSubtitle: {
+        fontSize: 14,
+        color: 'gray',
+        height: 30,
+        marginBottom: 10,
+    },
+    panelButton: {
+        padding: 13,
+        borderRadius: 10,
+        backgroundColor: '#FF6347',
+        alignItems: 'center',
+        marginVertical: 7,
+    },
+    panelButtonTitle: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+    action: {
+        flexDirection: 'row',
+        marginTop: 10,
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f2f2f2',
+        paddingBottom: 5,
+    },
+    actionError: {
+        flexDirection: 'row',
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#FF0000',
+        paddingBottom: 5,
     },
 });
 

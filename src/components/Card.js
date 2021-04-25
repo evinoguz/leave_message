@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage } from 'react-native-cards';
 
 const Cards = (props) => {
-  return (
+  return (      
     <TouchableOpacity>
       <Card>
         <CardImage
@@ -11,7 +11,6 @@ const Cards = (props) => {
           title={props.data.title.slice(0, 25)}
         />
         <CardTitle
-
           subtitle={props.data.created_at}
         />
       </Card>
