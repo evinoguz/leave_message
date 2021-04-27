@@ -38,13 +38,15 @@ class Home extends Component {
             />
             <TouchableOpacity
                 style={styles.panelButton}>
-                <Text style={styles.panelButtonTitle}>Signin</Text>
+                <Text style={styles.panelButtonTitle}>Download</Text>
             </TouchableOpacity>
+            {/*
             <TouchableOpacity
                 style={styles.panelButton}
                 onPress={() => this.bs.current.snapTo(1)}>
                 <Text style={styles.panelButtonTitle}>Cancel</Text>
             </TouchableOpacity>
+             */}
         </View>
     );
 
@@ -94,7 +96,7 @@ class Home extends Component {
                     >
                     </TextInput>
                     <TouchableOpacity disabled={true} style={styles.file}>
-                        <Text>Share Here </Text>
+                        <Text  style={styles.panelButtonTitle}>Share Here </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
                         <Text>Video tıkla</Text>
@@ -137,6 +139,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#39bf5a",
         padding: 10,
         borderRadius: 10,
+        color: "white"
     },
     click: {
         height: 80,
@@ -159,8 +162,8 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#FFFFFF',
         paddingTop: 20,
-        height:"100%",
-        
+        height: "100%",
+
     },
     header: {
         backgroundColor: '#FFFFFF',
@@ -196,7 +199,7 @@ const styles = StyleSheet.create({
     panelButton: {
         padding: 13,
         borderRadius: 10,
-        backgroundColor: '#FF6347',
+        backgroundColor: '#167726',
         alignItems: 'center',
         marginVertical: 7,
     },

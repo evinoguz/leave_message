@@ -13,6 +13,7 @@ const image = { uri: "https://media3.s-nbcnews.com/j/newscms/2019_41/3047866/191
 const profileImage = { uri: "https://upload.wikimedia.org/wikipedia/commons/f/f8/Billykid.jpg" };
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import SignIn from './SignIn';
 
 export function DrawerContent(props) {
   return (

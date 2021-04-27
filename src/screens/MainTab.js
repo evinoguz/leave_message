@@ -7,20 +7,34 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './Home';
 import RoomsScreen from './Rooms';
-import LoginScreen from './Login';
+import YoutubesScreen from './Youtubes';
+import SignInScreen from './SignIn';
+import SignUpScreen from './SignUp';
+
 
 const HomeStack = createStackNavigator();
 const RoomsStack = createStackNavigator();
 const LoginStack = createStackNavigator();
-
+const YoutubesStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const MainTab = () => (
   <Tab.Navigator
     initialRouteName="Home"
     tabBarOptions={{
-      activeTintColor: '#e91e63',
+      activeTintColor: '#009387',
     }}>
+    <Tab.Screen
+      name="Rooms"
+      component={RoomsStackScreen}
+      options={{
+        tabBarLabel: 'Rooms',
+        tabBarColor: '#d02860',
+        tabBarIcon: ({ color }) => (
+          <Icon name="ios-aperture" color={color} size={26} />
+        ),
+      }}
+    />
     <Tab.Screen
       name="Home"
       component={HomeStackScreen}
@@ -33,37 +47,20 @@ const MainTab = () => (
       }}
     />
     <Tab.Screen
-      name="Rooms"
-      component={RoomsStackScreen}
+      name="Youtubes"
+      component={YoutubesStackScreen}
       options={{
-        tabBarLabel: 'Updates',
+        tabBarLabel: 'Youtubes',
         tabBarColor: '#1f65ff',
         tabBarIcon: ({ color }) => (
           <Icon name="ios-notifications" color={color} size={26} />
         ),
       }}
     />
-    <Tab.Screen
-      name="youtube"
-      component={RoomsStackScreen}
-      options={{
-        tabBarLabel: 'Profile',
-        tabBarColor: '#694fad',
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-person" color={color} size={26} />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Setting"
+     <Tab.Screen
+      name="Login"
       component={LoginStackScreen}
-      options={{
-        tabBarLabel: 'Explore',
-        tabBarColor: '#d02860',
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-aperture" color={color} size={26} />
-        ),
-      }}
+      
     />
   </Tab.Navigator>
 );
@@ -100,11 +97,30 @@ const RoomsStackScreen = ({ navigation }) => (
     }
   }}>
     <RoomsStack.Screen name="Rooms" component={RoomsScreen} options={{
+      title: 'Rooms',
       headerLeft: () => (
         <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
       )
     }} />
   </RoomsStack.Navigator>
+);
+const YoutubesStackScreen = ({ navigation }) => (
+  <YoutubesStack.Navigator screenOptions={{
+    headerStyle: {
+      backgroundColor: '#009387',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    }
+  }}>
+    <YoutubesStack.Screen name="Youtubes" component={YoutubesScreen} options={{
+      title: 'Youtubes',
+      headerLeft: () => (
+        <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+      )
+    }} />
+  </YoutubesStack.Navigator>
 );
 const LoginStackScreen = ({ navigation }) => (
   <LoginStack.Navigator screenOptions={{
@@ -116,7 +132,8 @@ const LoginStackScreen = ({ navigation }) => (
       fontWeight: 'bold'
     }
   }}>
-    <LoginStack.Screen name="Login" component={LoginScreen} options={{
+    <LoginStack.Screen name="Login" component={SignInScreen} options={{
+      title:'',
       headerLeft: () => (
         <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
       )
