@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 
 const MainTab = () => (
   <Tab.Navigator
-    initialRouteName="Home"
+    initialRouteName="Login"
     tabBarOptions={{
       activeTintColor: '#009387',
     }}>
@@ -28,7 +28,7 @@ const MainTab = () => (
       name="Rooms"
       component={RoomsStackScreen}
       options={{
-        tabBarLabel: 'Rooms',
+        tabBarLabel: 'Note',
         tabBarColor: '#d02860',
         tabBarIcon: ({ color }) => (
           <Icon name="ios-aperture" color={color} size={26} />
@@ -60,7 +60,13 @@ const MainTab = () => (
      <Tab.Screen
       name="Login"
       component={LoginStackScreen}
-      
+      options={{
+        tabBarLabel: '',
+        tabBarColor: '#1f65ff',
+        tabBarIcon: ({ color }) => (
+          <Icon name="ios-person" color={color} size={40} />
+        ),
+      }}
     />
   </Tab.Navigator>
 );
