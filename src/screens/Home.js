@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, Alert } from "react-native";
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -14,6 +14,7 @@ class Home extends Component {
     this.state = {
       texts: [],
       files: [],
+      durum: true,
       file: "",
       password: "",
       title: "",
@@ -31,7 +32,7 @@ class Home extends Component {
         res.size,
       );
 
-      this.setState({file:res.name });
+      this.setState({file:res.name, durum:false});
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
       } else {
@@ -45,16 +46,13 @@ class Home extends Component {
       .then(response => {
         this.setState({ texts: response.data.texts, files: response.data.files });
       })
-      axios.get(`https://anonymupload.com/api`,{
+      axios.post(`https://anonymupload.com/api`,{
         file: this.state.file, 
         password: this.state.password,
         title: this.state.title
       })
-      .then(response => {
-        this.setState({ texts: response.data.texts, files: response.data.files });
-      })
   }
-
+ 
   renderData() {
     var data = this.state.texts.concat(this.state.files)
     return data.map((items, Id) =>
@@ -90,7 +88,9 @@ class Home extends Component {
       </View>
     </View>
   );
-
+share(){
+  Alert.alert('Uyarı', "Başarılı")
+}
   bs = React.createRef();
   fall = new Animated.Value(1);
 
@@ -133,7 +133,7 @@ class Home extends Component {
             
           >
           </TextInput>
-          <TouchableOpacity disabled={true} style={styles.file}>
+          <TouchableOpacity disabled={this.state.durum} style={styles.file}  onPress={() =>  this.share()}>
             <Text style={styles.panelButtonTitle}>Share Here </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
