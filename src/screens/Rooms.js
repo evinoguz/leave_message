@@ -15,12 +15,14 @@ class Rooms extends Component {
             files: [],
         };
     }
-
-    componentDidMount() {
+    getData(){
         axios.get(`https://anonymupload.com/api`)
             .then(response => {
                 this.setState({ texts: response.data.texts, files: response.data.files });
             })
+    }
+    componentDidMount() {
+       this.getData()
     }
     renderData() {
         var data = this.state.texts.concat(this.state.files)
