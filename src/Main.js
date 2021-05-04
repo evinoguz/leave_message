@@ -11,7 +11,7 @@ const Main = () => {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />}>
         <Drawer.Screen name="Home" component={Home} />
         <Drawer.Screen name="Rooms" component={Rooms} />
       </Drawer.Navigator>
