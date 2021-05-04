@@ -29,10 +29,9 @@ class Home extends Component {
         res.type, // mime type
         res.name,
         res.size,
-        res.password,
       );
 
-      this.setState({ file:res.uri, password:res.password,title:res.name });
+      this.setState({file:res.name });
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
       } else {
@@ -46,7 +45,16 @@ class Home extends Component {
       .then(response => {
         this.setState({ texts: response.data.texts, files: response.data.files });
       })
+      axios.get(`https://anonymupload.com/api`,{
+        file: this.state.file, 
+        password: this.state.password,
+        title: this.state.title
+      })
+      .then(response => {
+        this.setState({ texts: response.data.texts, files: response.data.files });
+      })
   }
+
   renderData() {
     var data = this.state.texts.concat(this.state.files)
     return data.map((items, Id) =>
@@ -115,7 +123,7 @@ class Home extends Component {
               Drop file here or click to upload
                     </Text>
           </TouchableOpacity>
-          <Text style={{ color: "green", textAlign: "center", fontSize: 12 }}>{this.state.title}</Text>
+          <Text style={{ color: "green", textAlign: "center", fontSize: 12 }}>{this.state.file}</Text>
           <Text style={{ color: "red", textAlign: "center", fontSize: 12 }}>Share file with password (max:1GB)</Text>
           <TextInput secureTextEntry={true}
             autoCorrect={false}
