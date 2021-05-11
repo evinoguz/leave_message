@@ -10,12 +10,14 @@ import RoomsScreen from './Rooms';
 import YoutubesScreen from './Youtubes';
 import SignInScreen from './SignIn';
 import SignUpScreen from './SignUp';
+import FileScreen from './File';
 
 
 const HomeStack = createStackNavigator();
 const RoomsStack = createStackNavigator();
 const LoginStack = createStackNavigator();
 const YoutubesStack = createStackNavigator();
+const FileStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const MainTab = () => (
@@ -145,4 +147,22 @@ const LoginStackScreen = ({ navigation }) => (
       )
     }} />
   </LoginStack.Navigator>
+);
+const FileStackScreen = ({ navigation }) => (
+  <FileScreen.Navigator screenOptions={{
+    headerStyle: {
+      backgroundColor: '#009387',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    }
+  }}>
+    <FileStack.Screen name="Home" component={FileScreen} options={{
+      title: 'Home',
+      headerLeft: () => (
+        <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+      )
+    }} />
+  </FileScreen.Navigator>
 );
