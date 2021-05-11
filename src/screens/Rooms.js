@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, ActivityIndicator } from "react-native";
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -13,19 +13,23 @@ class Rooms extends Component {
         this.state = {
             texts: [],
             files: [],
+            loading: false,
         };
     }
-    getData(){
+
+    componentDidMount() {
+        this.setState({ loading: true });
         axios.get(`https://anonymupload.com/api`)
             .then(response => {
-                this.setState({ texts: response.data.texts, files: response.data.files });
+                this.setState({
+                    texts: response.data.texts,
+                    files: response.data.files,
+                    loading: false,
+                });
             })
     }
-    componentDidMount() {
-       this.getData()
-    }
     renderData() {
-        var data = this.state.texts.concat(this.state.files)
+        var data = this.state.texts;
         return data.map((items, Id) =>
             <Card key={Id} data={items} />
         );
@@ -34,6 +38,7 @@ class Rooms extends Component {
         return (
             <View style={{ flex: 1, marginTop: 10 }}>
                 <ScrollView >
+                    {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                     {this.renderData()}
                 </ScrollView>
             </View>
