@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import DocumentPicker from 'react-native-document-picker';
-
+import StickyParallaxHeader from 'react-native-sticky-parallax-header';
 const { width, height } = Dimensions.get('screen');
 
 class Home extends Component {
@@ -99,7 +99,7 @@ class Home extends Component {
     renderData() {
         var data = this.state.files;
         return data.map((items, Id) =>
-            <Card key={Id} data={items} />,
+            <Card key={Id} data={items} onPress={() => this.bs.current.snapTo(0)} />,
         );
     }
 
@@ -139,6 +139,7 @@ class Home extends Component {
     render() {
 
         return (
+
             <View style={{ flex: 1, marginTop: 10 }}>
                 <BottomSheet
                     ref={this.bs}
@@ -189,16 +190,13 @@ class Home extends Component {
                     </TouchableOpacity>
                 </View>
                 <ScrollView style={{ paddingTop: 20 }}>
-                    <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
-                        <Text>video tıkla</Text>
-                    </TouchableOpacity>
                     {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                     {this.renderData()}
                 </ScrollView>
             </View>
         );
     }
-} 
+}
 
 const styles = StyleSheet.create({
     input: {
