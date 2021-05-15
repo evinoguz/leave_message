@@ -7,6 +7,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import DocumentPicker from 'react-native-document-picker';
 import StickyParallaxHeader from 'react-native-sticky-parallax-header';
+
 const { width, height } = Dimensions.get('screen');
 
 class Home extends Component {
@@ -21,6 +22,8 @@ class Home extends Component {
             title: '',
             singleFile: null,
             state: true,
+            password_Post: '',
+            password_Download: '',
         };
     }
 
@@ -90,7 +93,34 @@ class Home extends Component {
                 });
             });
     }
+    cardBottomSheet(value) {
+        this.setState({
+            isLoading: true,
+            password_Download:''
+        })
+        if (value > 0) {
+            this.bs.current.snapTo(0);
+            axios.get(`https://anonymupload.com/api/get/` + value)
+                .then(response => {
+                    this.setState({
+                        isLoading: false,
+                        password_Post: response.data.password,
+                    });
+                });
 
+        }
+    }
+    getBottomSheet() {
+        if (this.state.password_Post === this.state.password_Download) {
+            Alert.alert("Transaction Successful")
+        }
+        else {
+            Alert.alert("İnvalid Password");
+            this.setState({
+                password_Download: '',
+            });
+        }
+    }
     componentDidMount() {
         this.getDatas();
 
@@ -99,7 +129,7 @@ class Home extends Component {
     renderData() {
         var data = this.state.files;
         return data.map((items, Id) =>
-            <Card key={Id} data={items} onPress={() => this.bs.current.snapTo(0)} />,
+            <Card key={Id} data={items} onPress={() => this.cardBottomSheet(items.id)} />,
         );
     }
 
@@ -110,9 +140,12 @@ class Home extends Component {
                 placeholderTextColor="#cccccc"
                 autoCorrect={false}
                 style={styles.password}
+                onChangeText={(password_Download) => this.setState({ password_Download })}
+                value={this.state.password_Download}
             />
             <TouchableOpacity
-                style={styles.panelButton}>
+                style={styles.panelButton}
+                onPress={() => this.getBottomSheet()}>
                 <Text style={styles.panelButtonTitle}>Download</Text>
             </TouchableOpacity>
             {/*
@@ -137,7 +170,6 @@ class Home extends Component {
     fall = new Animated.Value(1);
 
     render() {
-
         return (
 
             <View style={{ flex: 1, marginTop: 10 }}>
@@ -150,7 +182,7 @@ class Home extends Component {
                     callbackNode={this.fall}
                     enabledGestureInteraction={true}
                 />
-                <View style={{
+                <Animated.View style={{
                     padding: 20,
                     borderRadius: 20,
                     backgroundColor: '#009387',
@@ -188,8 +220,8 @@ class Home extends Component {
                     <TouchableOpacity disabled={this.state.state} onPress={() => this.upload()} style={styles.file}>
                         <Text style={styles.panelButtonTitle}>Share Here</Text>
                     </TouchableOpacity>
-                </View>
-                <ScrollView style={{ paddingTop: 20 }}>
+                </Animated.View>
+                <ScrollView>
                     {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                     {this.renderData()}
                 </ScrollView>
