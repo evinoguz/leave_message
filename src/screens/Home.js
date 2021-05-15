@@ -22,7 +22,7 @@ class Home extends Component {
             title: '',
             singleFile: null,
             state: true,
-            password_Post: '',
+            download_link: '',
             password_Download: '',
         };
     }
@@ -85,45 +85,51 @@ class Home extends Component {
     };
 
     getDatas() {
+        this.setState({
+            isLoading: true,
+        })
         axios.get(`https://anonymupload.com/api`)
             .then(response => {
                 this.setState({
+                    loading: false,
                     texts: response.data.texts,
-                    files: response.data.files
+                    files: response.data.files,
                 });
             });
     }
     cardBottomSheet(value) {
-        this.setState({
-            isLoading: true,
-            password_Download:''
-        })
         if (value > 0) {
-            this.bs.current.snapTo(0);
-            axios.get(`https://anonymupload.com/api/get/` + value)
-                .then(response => {
-                    this.setState({
-                        isLoading: false,
-                        password_Post: response.data.password,
-                    });
-                });
 
-        }
-    }
-    getBottomSheet() {
-        if (this.state.password_Post === this.state.password_Download) {
-            Alert.alert("Transaction Successful")
-        }
-        else {
-            Alert.alert("İnvalid Password");
             this.setState({
-                password_Download: '',
+                password_Download: ''
+            })
+            this.bs.current.snapTo(0);
+            this.setState({
+                id: value,
             });
         }
     }
+    download(id) {
+        let header = {
+            headers: {
+                'Content-Type': 'multipart/form-data; ',
+            },
+        };
+        const data = new FormData();
+        data.append('password', this.state.password_Download);
+        this.setState({ loading: true });
+        axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
+            .then(response => {
+                this.setState({
+                    //password_Download:'',
+                    loading: false,
+                    download_link: response.data.download_link,
+                });
+                console.log(this.state.download_link);
+            });
+    }
     componentDidMount() {
         this.getDatas();
-
     }
 
     renderData() {
@@ -145,7 +151,7 @@ class Home extends Component {
             />
             <TouchableOpacity
                 style={styles.panelButton}
-                onPress={() => this.getBottomSheet()}>
+                onPress={() => this.download(this.state.id)}>
                 <Text style={styles.panelButtonTitle}>Download</Text>
             </TouchableOpacity>
             {/*
@@ -220,6 +226,7 @@ class Home extends Component {
                     <TouchableOpacity disabled={this.state.state} onPress={() => this.upload()} style={styles.file}>
                         <Text style={styles.panelButtonTitle}>Share Here</Text>
                     </TouchableOpacity>
+
                 </Animated.View>
                 <ScrollView>
                     {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}

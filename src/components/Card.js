@@ -22,7 +22,7 @@ class CardComponent extends Component {
                         <Text style={{ width: '50%', fontSize: 18 }}>
                             {this.props.data.title.slice(0, 25)}
                         </Text>
-                        <View style={{ flexDirection: 'row', paddingTop: 40, paddingLeft: 100, alignItems: 'flex-end' }}>
+                        <View style={{ flexDirection: 'row', paddingTop: 40, paddingLeft: 70, alignItems: 'flex-end' }}>
                             <Icon name="clock-outline" size={15} style={{ paddingRight: 5 }} />
                             <Text style={{ width: '50%', fontSize: 10 }} >
                                 {prettyTime(this.props.data.created_at)}
