@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, Alert, ActivityIndicator, Linking } from 'react-native';
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -24,6 +24,7 @@ class Home extends Component {
             state: true,
             download_link: '',
             password_Download: '',
+            id:'',
         };
     }
 
@@ -97,18 +98,23 @@ class Home extends Component {
                 });
             });
     }
+
+    componentDidMount() {
+        this.getDatas();
+    }
+    
     cardBottomSheet(value) {
         if (value > 0) {
 
             this.setState({
-                password_Download: ''
+                password_Download: '',
+                id: value,
             })
             this.bs.current.snapTo(0);
-            this.setState({
-                id: value,
-            });
+            
         }
     }
+
     download(id) {
         let header = {
             headers: {
@@ -121,15 +127,59 @@ class Home extends Component {
         axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
             .then(response => {
                 this.setState({
-                    //password_Download:'',
                     loading: false,
                     download_link: response.data.download_link,
                 });
-                console.log(this.state.download_link);
-            });
+                if (this.state.download_link) {
+                    Alert.alert("Warning", "Do you download the file?",
+                        [{ text: "Cancel", style: "cancel" },
+                        { text: "Download", onPress: () => { this.loadInBrowser(this.state.download_link) } }
+                        ]);
+                }
+                else {
+                    Alert.alert("password is incorrect");
+                }
+            }
+            );
     }
-    componentDidMount() {
-        this.getDatas();
+
+    loadInBrowser = (url) => {
+        Linking.canOpenURL(url).then(supported => {
+            if (supported) {
+                Linking.openURL(url);
+                this.bs.current.snapTo(1);
+            } else {
+                console.log("Don't know how to open URI: " + url);
+            }
+        });
+    };
+
+    remove(id) {
+        let header = {
+            headers: {
+                'Content-Type': 'multipart/form-data; ',
+            },
+        };
+        const data = new FormData();
+        data.append('password', this.state.password_Download);
+        this.setState({ loading: true });
+        axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
+            .then(response => {
+                this.setState({
+                    loading: false,
+                    download_link: response.data.download_link,
+                });
+                if (this.state.download_link) {
+                    Alert.alert("Warning", "Would you like to delete a file?",
+                        [{ text: "No", style: "cancel" },
+                        { text: "Yes", onPress: () => { } }
+                        ]);
+                }
+                else {
+                    Alert.alert("password is incorrect");
+                }
+            }
+            );
     }
 
     renderData() {
@@ -150,17 +200,17 @@ class Home extends Component {
                 value={this.state.password_Download}
             />
             <TouchableOpacity
-                style={styles.panelButton}
+                style={styles.panelDownload}
                 onPress={() => this.download(this.state.id)}>
                 <Text style={styles.panelButtonTitle}>Download</Text>
             </TouchableOpacity>
-            {/*
+
             <TouchableOpacity
-                style={styles.panelButton}
-                onPress={() => this.bs.current.snapTo(1)}>
-                <Text style={styles.panelButtonTitle}>Cancel</Text>
+                style={styles.panelRemove}
+                onPress={() => this.remove(this.state.id)}>
+                <Text style={styles.panelButtonTitle}>Remove</Text>
             </TouchableOpacity>
-             */}
+
         </View>
     );
 
@@ -324,10 +374,17 @@ const styles = StyleSheet.create({
         height: 30,
         marginBottom: 10,
     },
-    panelButton: {
+    panelDownload: {
         padding: 13,
         borderRadius: 10,
         backgroundColor: '#167726',
+        alignItems: 'center',
+        marginVertical: 7,
+    },
+    panelRemove: {
+        padding: 13,
+        borderRadius: 10,
+        backgroundColor: '#bf0000',
         alignItems: 'center',
         marginVertical: 7,
     },
