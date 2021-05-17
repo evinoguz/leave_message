@@ -34,6 +34,7 @@
     "react-native-reanimated": "^2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.1.1",
+    "react-native-sticky-parallax-header": "^0.4.0",
     "react-native-svg": "^12.1.1",
     "react-native-unimodules": "^0.13.3",
     "react-native-vector-icons": "^8.1.0",
