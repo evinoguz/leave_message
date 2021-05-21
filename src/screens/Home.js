@@ -7,6 +7,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import DocumentPicker from 'react-native-document-picker';
 import StickyParallaxHeader from 'react-native-sticky-parallax-header';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -15,7 +16,6 @@ class Home extends Component {
         super();
         this.state = {
             loading: false,
-            texts: [],
             files: [],
             file: '',
             password: '',
@@ -24,7 +24,8 @@ class Home extends Component {
             state: true,
             download_link: '',
             password_Download: '',
-            id:'',
+            id: '',
+            removestate: true,
         };
     }
 
@@ -93,7 +94,6 @@ class Home extends Component {
             .then(response => {
                 this.setState({
                     loading: false,
-                    texts: response.data.texts,
                     files: response.data.files,
                 });
             });
@@ -102,96 +102,120 @@ class Home extends Component {
     componentDidMount() {
         this.getDatas();
     }
-    
+
     cardBottomSheet(value) {
         if (value > 0) {
 
             this.setState({
                 password_Download: '',
+                download_link: '',
                 id: value,
+                removestate: true,
             })
             this.bs.current.snapTo(0);
-            
+
         }
     }
 
     download(id) {
-        let header = {
-            headers: {
-                'Content-Type': 'multipart/form-data; ',
-            },
-        };
-        const data = new FormData();
-        data.append('password', this.state.password_Download);
-        this.setState({ loading: true });
-        axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
-            .then(response => {
-                this.setState({
-                    loading: false,
-                    download_link: response.data.download_link,
-                });
-                if (this.state.download_link) {
+        if (this.state.password_Download) {
+            let header = {
+                headers: {
+                    'Content-Type': 'multipart/form-data; ',
+                },
+            };
+            const data = new FormData();
+            data.append('password', this.state.password_Download);
+            this.setState({ loading: true });
+            axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
+                .then(response => {
+                    this.setState({
+                        loading: false,
+                        download_link: response.data.download_link,
+                    });
                     Alert.alert("Warning", "Do you download the file?",
                         [{ text: "Cancel", style: "cancel" },
-                        { text: "Download", onPress: () => { this.loadInBrowser(this.state.download_link) } }
+                        { text: "Download", onPress: () => { this.filedowload() } }
                         ]);
+
                 }
-                else {
-                    Alert.alert("password is incorrect");
-                }
-            }
-            );
+                ).catch(error => {
+                    Alert.alert("Warning", "password is incorrect");
+                    this.setState({
+                        password_Download: '',
+                    });
+                });
+        }
+        else {
+            Alert.alert("Warning", "Please enter password")
+        }
+
     }
 
-    loadInBrowser = (url) => {
-        Linking.canOpenURL(url).then(supported => {
-            if (supported) {
-                Linking.openURL(url);
-                this.bs.current.snapTo(1);
-            } else {
-                console.log("Don't know how to open URI: " + url);
-            }
+    filedowload = () => {
+        this.setState({
+            removestate: false,
+        });
+        const { config, fs } = RNFetchBlob;
+        const date = new Date();
+
+        const { DownloadDir } = fs.dirs; // You can check the available directories in the wiki.
+        const options = {
+            fileCache: true,
+            addAndroidDownloads: {
+                useDownloadManager: true, // true will use native manager and be shown on notification bar.
+                notification: true,
+                path: `${DownloadDir}_${Math.floor(date.getTime() + date.getSeconds() / 2)}`,
+                description: 'Downloading...',
+            },
+        };
+
+        config(options).fetch('GET', this.state.download_link).then((res) => {
+            console.log('do some magic in here');
         });
     };
 
     remove(id) {
+        if (this.state.download_link) {
+            Alert.alert("Warning", "Would you like to delete a file?",
+                [{ text: "No", style: "cancel" },
+                { text: "Yes", onPress: () => { this.getremove(id) } }
+                ]);
+        }
+
+    }
+    getremove(id) {
         let header = {
             headers: {
                 'Content-Type': 'multipart/form-data; ',
             },
         };
         const data = new FormData();
+        data.append('id', id);
         data.append('password', this.state.password_Download);
         this.setState({ loading: true });
-        axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
+        axios.post(`https://anonymupload.com/api/removeFile`, data, header)
             .then(response => {
                 this.setState({
                     loading: false,
-                    download_link: response.data.download_link,
                 });
-                if (this.state.download_link) {
-                    Alert.alert("Warning", "Would you like to delete a file?",
-                        [{ text: "No", style: "cancel" },
-                        { text: "Yes", onPress: () => { } }
-                        ]);
-                }
-                else {
-                    Alert.alert("password is incorrect");
-                }
+                Alert.alert("Warning", response.data.message),
+                    this.bs.current.snapTo(1);
+                this.getDatas();
             }
             );
-    }
-
+    };
     renderData() {
         var data = this.state.files;
         return data.map((items, Id) =>
-            <Card key={Id} data={items} onPress={() => this.cardBottomSheet(items.id)} />,
+            <Card key={Id} data={items} onPress={() => this.cardBottomSheet(items.id)} />
         );
     }
 
     renderInner = () => (
         <View style={styles.panel}>
             <TextInput secureTextEntry={true}
+                editable={this.state.removestate}
                 placeholder="Password"
                 placeholderTextColor="#cccccc"
                 autoCorrect={false}
@@ -205,7 +229,7 @@ class Home extends Component {
                 <Text style={styles.panelButtonTitle}>Download</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            <TouchableOpacity disabled={this.state.removestate}
                 style={styles.panelRemove}
                 onPress={() => this.remove(this.state.id)}>
                 <Text style={styles.panelButtonTitle}>Remove</Text>
