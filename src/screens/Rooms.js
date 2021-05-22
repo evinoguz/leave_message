@@ -12,7 +12,6 @@ class Rooms extends Component {
         super();
         this.state = {
             texts: [],
-            files: [],
             loading: false,
         };
     }
@@ -23,7 +22,6 @@ class Rooms extends Component {
             .then(response => {
                 this.setState({
                     texts: response.data.texts,
-                    files: response.data.files,
                     loading: false,
                 });
             })
