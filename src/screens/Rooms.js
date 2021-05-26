@@ -1,9 +1,8 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from "react-native";
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get("screen");

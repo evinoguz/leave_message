@@ -53,13 +53,24 @@ export function DrawerContent(props) {
             <DrawerItem
               icon={({ color, size }) => (
                 <Icon
+                name="account-check-outline" 
+                color={color}
+                  size={size}
+                />
+              )}
+              label="Youtubes"
+              onPress={() => { props.navigation.navigate('Youtubes') }}
+            />
+            <DrawerItem
+              icon={({ color, size }) => (
+                <Icon
                 name="exit-to-app" 
                 color={color}
                   size={size}
                 />
               )}
               label="Login"
-              onPress={() => { props.navigation.navigate('Login') }}
+              onPress={() => { props.navigation.navigate('SignIn') }}
             />
           </Drawer.Section>
         </View>

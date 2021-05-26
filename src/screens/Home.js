@@ -26,6 +26,10 @@ class Home extends Component {
             password_Download: '',
             id: '',
             removestate: true,
+            sayac: 1,
+            time: 20,
+            timerstate: false,
+
         };
     }
 
@@ -44,28 +48,15 @@ class Home extends Component {
     }
 
     upload = () => {
-        if (!this.state.singleFile) {
-            Alert.alert('Warning:', 'Please upload a file');
-        } else if (!this.state.title) {
-            Alert.alert('Warning:', 'Please enter title');
-        }
-        else if (!this.state.password) {
-            Alert.alert('Warning:', 'Saved note in rooms tab');
-        }
-        else {
-            Alert.alert('info:', 'Your file has been uploaded');
-        }
         let header = {
             headers: {
                 'Content-Type': 'multipart/form-data; ',
             },
         };
         const data = new FormData();
-        if (this.state.singleFile) {
-            data.append('file', this.state.singleFile);
-            data.append('title', this.state.title);
-            data.append('password', this.state.password);
-        }
+        data.append('file', this.state.singleFile);
+        data.append('title', this.state.title);
+        data.append('password', this.state.password);
         this.setState({ loading: true });
         axios.post(`https://anonymupload.com/api`, data, header)
             .then(response => {
@@ -81,6 +72,9 @@ class Home extends Component {
                     id: '',
                 });
             }).catch(e => {
+                this.setState({
+                    loading: false,
+                })
                 alert('Error: ');
             });
 
@@ -101,9 +95,36 @@ class Home extends Component {
 
     componentDidMount() {
         this.getDatas();
-    }
 
-    cardBottomSheet(value) {
+    }
+    update = () => {
+        if (this.state.time === 0) {
+            this.setState({
+                sayac: 1,
+                timerstate: false,
+            });
+        }
+        else {
+            this.setState({
+                time: this.state.time - 1,
+            });
+        }
+    };
+    async t(){
+
+    }
+    secondsToMinutes = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time - minutes * 60;
+        return (
+
+            (minutes < 10 ? '0' + minutes : minutes) +
+            ':' +
+            (seconds < 10 ? '0' + seconds : seconds)
+        );
+    };
+
+    async cardBottomSheet(value) {
         if (value > 0) {
 
             this.setState({
@@ -111,14 +132,26 @@ class Home extends Component {
                 download_link: '',
                 id: value,
                 removestate: true,
+                sayac: 1,
+                timerstate: false,
             })
             this.bs.current.snapTo(0);
 
         }
     }
 
-    download(id) {
+    async download(id) {
         if (this.state.password_Download) {
+            if (this.state.sayac === 2) {
+                this.setState({
+                    timerstate: true,
+                })
+                Alert.alert("Error", "Please wait...")
+                const timer = setInterval(() => this.update(), 1000);
+                return () => {
+                    clearInterval(timer);
+                };
+            }
             let header = {
                 headers: {
                     'Content-Type': 'multipart/form-data; ',
@@ -131,9 +164,10 @@ class Home extends Component {
                 .then(response => {
                     this.setState({
                         loading: false,
+                        sayac: 1,
                         download_link: response.data.download_link,
                     });
-                    Alert.alert("Warning", "Do you download the file?",
+                    Alert.alert("Warning", "Do you want to download the file?",
                         [{ text: "Cancel", style: "cancel" },
                         { text: "Download", onPress: () => { this.filedowload() } }
                         ]);
@@ -143,6 +177,8 @@ class Home extends Component {
                     Alert.alert("Warning", "password is incorrect");
                     this.setState({
                         password_Download: '',
+                        loading: false,
+                        sayac:this.state.sayac+1,
                     });
                 });
         }
@@ -211,9 +247,15 @@ class Home extends Component {
             <Card key={Id} data={items} onPress={() => this.cardBottomSheet(items.id)} />
         );
     }
-
     renderInner = () => (
         <View style={styles.panel}>
+            {this.state.timerstate && (
+                <Text style={{ color: '#cccccc', fontSize: 20, textAlign: 'center' }}>
+                    <ActivityIndicator size="small" color="#cccccc"></ActivityIndicator>
+                    {"  " + this.secondsToMinutes(this.state.time)}
+                </Text>
+
+            )}
             <TextInput secureTextEntry={true}
                 editable={this.state.removestate}
                 placeholder="Password"
@@ -262,47 +304,46 @@ class Home extends Component {
                     callbackNode={this.fall}
                     enabledGestureInteraction={true}
                 />
-                <Animated.View style={{
-                    padding: 20,
-                    borderRadius: 20,
-                    backgroundColor: '#009387',
-                    marginRight: 10,
-                    marginLeft: 10,
-                }}>
-                    <Text>{this.myFile}</Text>
-                    <TextInput placeholder="Share a youtube link or any text..." style={styles.input}
-                        numberOfLines={10}
-                        multiline={true}
-                        placeholderTextColor="#cccccc"
-                        onChangeText={(title) => this.setState({ title })}
-                        value={this.state.title}
-
-                    >
-                    </TextInput>
-
-                    <TouchableOpacity style={styles.click} onPress={() => this.openDocumentFile()}>
-                        <Icon name="download" size={30} color="#000000" />
-                        <Text>
-                            Drop file here or click to upload
-                        </Text>
-                    </TouchableOpacity>
-                    <Text style={{ color: 'red', textAlign: 'center', fontSize: 12 }}>Share file with password
-                        (max:1GB)</Text>
-                    <TextInput secureTextEntry={true}
-                        autoCorrect={false}
-                        placeholder="Password" style={styles.password}
-                        placeholderTextColor="#cccccc"
-                        onChangeText={(password) => this.setState({ password })}
-                        value={this.state.password}
-
-                    >
-                    </TextInput>
-                    <TouchableOpacity disabled={this.state.state} onPress={() => this.upload()} style={styles.file}>
-                        <Text style={styles.panelButtonTitle}>Share Here</Text>
-                    </TouchableOpacity>
-
-                </Animated.View>
                 <ScrollView>
+                    <Animated.View style={{
+                        padding: 20,
+                        borderRadius: 20,
+                        backgroundColor: '#009387',
+                        marginRight: 10,
+                        marginLeft: 10,
+                    }}>
+                        <Text>{this.myFile}</Text>
+                        <TextInput placeholder="Share a youtube link or any text..." style={styles.input}
+                            numberOfLines={10}
+                            multiline={true}
+                            placeholderTextColor="#cccccc"
+                            onChangeText={(title) => this.setState({ title })}
+                            value={this.state.title}
+
+                        >
+                        </TextInput>
+
+                        <TouchableOpacity style={styles.click} onPress={() => this.openDocumentFile()}>
+                            <Icon name="download" size={30} color="#000000" />
+                            <Text>
+                                Drop file here or click to upload
+                        </Text>
+                        </TouchableOpacity>
+                        <Text style={{ color: 'red', textAlign: 'center', fontSize: 12 }}>Share file with password
+                        (max:1GB)</Text>
+                        <TextInput secureTextEntry={true}
+                            autoCorrect={false}
+                            placeholder="Password" style={styles.password}
+                            placeholderTextColor="#cccccc"
+                            onChangeText={(password) => this.setState({ password })}
+                            value={this.state.password}
+
+                        >
+                        </TextInput>
+                        <TouchableOpacity onPress={() => this.upload()} style={styles.file}>
+                            <Text style={styles.panelButtonTitle}>Share Here</Text>
+                        </TouchableOpacity>
+                    </Animated.View>
                     {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                     {this.renderData()}
                 </ScrollView>

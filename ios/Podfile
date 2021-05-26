@@ -20,6 +20,10 @@ target 'leave_message' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'YouTubeSdk', :path => '../node_modules/react-native-youtube-sdk'
+
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
   target 'leave_messageTests' do
     inherit! :complete
     # Pods for testing
