@@ -1,4 +1,10 @@
 rootProject.name = 'leave_message'
+include ':react-native-video'
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
+include ':react-native-youtube-sdk'
+project(':react-native-youtube-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-youtube-sdk/android')
+include ':react-native-webview'
+project(':react-native-webview').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview/android')
 include ':rn-fetch-blob'
 project(':rn-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/rn-fetch-blob/android')
 include ':rn-fetch-blob'

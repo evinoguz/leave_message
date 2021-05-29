@@ -57,17 +57,6 @@ const MainTab = () => (
         ),
       }}
     />
-     <Tab.Screen
-      name="Login"
-      component={LoginStackScreen}
-      options={{
-        tabBarLabel: '',
-        tabBarColor: '#1f65ff',
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-person" color={color} size={40} />
-        ),
-      }}
-    />
   </Tab.Navigator>
 );
 

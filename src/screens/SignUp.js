@@ -96,7 +96,7 @@ const SignUp = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => navigation.goBack()}
+                            onPress={() => { navigation.navigate('SignIn') }}
                             style={[styles.signIn, {
                                 borderColor: '#009387',
                                 borderWidth: 1,
@@ -106,6 +106,18 @@ const SignUp = ({ navigation }) => {
                             <Text style={[styles.textSign, {
                                 color: '#009387'
                             }]}>Sign In</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate('Home') }}
+                            style={[styles.signIn, {
+                                borderColor: '#009387',
+                                borderWidth: 1,
+                                marginTop: 15
+                            }]}
+                        >
+                            <Text style={[styles.textSign, {
+                                color: '#009387'
+                            }]}>Guest Login</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
