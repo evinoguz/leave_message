@@ -114,7 +114,6 @@ class Home extends Component {
             this.setState({
                 sayac: 1,
                 timerstate: false,
-                time:180,
             });
         }
         else {
@@ -125,6 +124,13 @@ class Home extends Component {
     };
 
     secondsToMinutes = (time) => {
+        if (this.state.time === 0) {
+            this.setState({
+                sayac: 1,
+                timerstate: false,
+                time: 180
+            });
+        }
         const minutes = Math.floor(time / 60);
         const seconds = time - minutes * 60;
         return (
@@ -147,22 +153,22 @@ class Home extends Component {
             this.bs.current.snapTo(0);
         }
     }
-    
+
     download(id) {
-        if (this.state.sayac === 4) {
-            this.setState({
-                time:180,
-                timerstate: true,
-            })
-
-            Alert.alert("Error", "Please wait...")
-            const timer = setInterval(() => this.update(), 1500);
-            return () => {
-                clearInterval(timer);
-            };
-
-        }
         if (this.state.password_Download) {
+            if (this.state.sayac === 4) {
+                this.setState({
+                    time: 180,
+                    timerstate: true,
+                })
+
+                Alert.alert("Error", "Please wait...")
+                const timer = setInterval(() => this.update(), 1500);
+                return () => {
+                    clearInterval(timer);
+                };
+
+            }
             let header = {
                 headers: {
                     'Content-Type': 'multipart/form-data; ',
@@ -174,6 +180,7 @@ class Home extends Component {
                 .then(response => {
                     this.setState({
                         sayac: 1,
+                        loading: false,
                         download_link: response.data.download_link,
                     });
                     Alert.alert("Warning", "Do you want to download the file?",
@@ -206,29 +213,29 @@ class Home extends Component {
             }
         });
     };
-   /* filedowload = () => {
-        this.setState({
-            removestate: false,
-        });
-        const { config, fs } = RNFetchBlob;
-        const date = new Date();
-
-        const { DownloadDir } = fs.dirs; // You can check the available directories in the wiki.
-        const options = {
-            fileCache: true,
-            addAndroidDownloads: {
-                useDownloadManager: true, // true will use native manager and be shown on notification bar.
-                notification: true,
-                path: `${DownloadDir}_${Math.floor(date.getTime() + date.getSeconds() / 2)}`,
-                description: 'Downloading...',
-            },
-        };
-
-        config(options).fetch('GET', this.state.download_link).then((res) => {
-            console.log('do some magic in here');
-        });
-    };
-*/
+    /* filedowload = () => {
+         this.setState({
+             removestate: false,
+         });
+         const { config, fs } = RNFetchBlob;
+         const date = new Date();
+ 
+         const { DownloadDir } = fs.dirs; // You can check the available directories in the wiki.
+         const options = {
+             fileCache: true,
+             addAndroidDownloads: {
+                 useDownloadManager: true, // true will use native manager and be shown on notification bar.
+                 notification: true,
+                 path: `${DownloadDir}_${Math.floor(date.getTime() + date.getSeconds() / 2)}`,
+                 description: 'Downloading...',
+             },
+         };
+ 
+         config(options).fetch('GET', this.state.download_link).then((res) => {
+             console.log('do some magic in here');
+         });
+     };
+ */
     remove(id) {
         if (this.state.download_link) {
             Alert.alert("Warning", "Would you like to delete a file?",
