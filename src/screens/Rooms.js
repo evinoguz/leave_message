@@ -74,7 +74,7 @@ class Rooms extends Component {
 
                 </TextInput>
                 <TouchableOpacity style={styles.click} onPress={() => this.sendNotes()}>
-                    <Icon name="send" size={35} color="white" />
+                    <Icon name="send" size={25} color="white" />
 
                 </TouchableOpacity>
             </View>
@@ -94,12 +94,10 @@ class Rooms extends Component {
                         onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: false })}>
                         {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                         {this.renderData()}
-                        {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
-
                     </ScrollView>
 
                 </View>
-                <View style={{ flex: 1, marginTop: 10 }}>
+                <View style={styles.inputStyle}>
                     <KeyboardAvoidingView
                         enabled={true}
                         behavior="padding">
@@ -118,17 +116,16 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputStyle: {
+        height:60,
         flexDirection: 'row',
         flex: 1,
         padding: 0,
-        paddingBottom: 90,
-        marginBottom: 10,
+        marginBottom: 5,
         alignItems: 'center',
-
     },
     textBox: {
         width: '80%',
-        height: 70,
+        height: 40,
         backgroundColor: 'white',
         margin: 8,
         borderWidth: 1,
@@ -137,16 +134,17 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
         color: '#5a004b',
         paddingLeft: 10,
+
     },
     messagesMainDiv: {
         minHeight: '90%',
     },
 
     click: {
-        height: 50,
+        height: 40,
         padding: 5,
         borderRadius: 50,
-        width: 50,
+        width: 40,
         paddingTop: 7,
         margin: 4,
         alignItems: 'flex-end',
