@@ -40,7 +40,7 @@ class Home extends Component {
             id: '',
             removestate: true,
             sayac: 1,
-            time: 20,
+            time: 180,
             timerstate: false,
 
         };
@@ -114,7 +114,7 @@ class Home extends Component {
             this.setState({
                 sayac: 1,
                 timerstate: false,
-                time:20,
+                time:180,
             });
         }
         else {
@@ -149,20 +149,20 @@ class Home extends Component {
     }
     
     download(id) {
+        if (this.state.sayac === 4) {
+            this.setState({
+                time:180,
+                timerstate: true,
+            })
+
+            Alert.alert("Error", "Please wait...")
+            const timer = setInterval(() => this.update(), 1500);
+            return () => {
+                clearInterval(timer);
+            };
+
+        }
         if (this.state.password_Download) {
-            if (this.state.sayac === 2) {
-                this.setState({
-                    time:20,
-                    timerstate: true,
-                })
-
-                Alert.alert("Error", "Please wait...")
-                const timer = setInterval(() => this.update(), 1500);
-                return () => {
-                    clearInterval(timer);
-                };
-
-            }
             let header = {
                 headers: {
                     'Content-Type': 'multipart/form-data; ',
