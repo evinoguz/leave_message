@@ -1,15 +1,15 @@
-import React, {Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 import axios from 'axios';
 import {
     View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator, TouchableOpacity,
-    TextInput,
+    TextInput, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback,
 } from 'react-native';
 import CardNotes from '.././components/CardNotes';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Animated from 'react-native-reanimated';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 class Rooms extends Component {
     constructor() {
@@ -17,11 +17,12 @@ class Rooms extends Component {
         this.state = {
             texts: [],
             loading: false,
+            title: '',
         };
     }
 
-    componentDidMount() {
-        this.setState({loading: true});
+    getDatas() {
+        this.setState({ loading: true });
         axios.get(`https://anonymupload.com/api`)
             .then(response => {
                 this.setState({
@@ -31,28 +32,49 @@ class Rooms extends Component {
             });
     }
 
+    componentDidMount() {
+        this.getDatas();
+    }
+    sendNotes = () => {
+        let header = {
+            headers: {
+                'Content-Type': 'multipart/form-data; ',
+            },
+        };
+        const data = new FormData();
+        data.append('title', this.state.title);
+        axios.post(`https://anonymupload.com/api`, data, header)
+            .then(response => {
+                this.getDatas();
+                this.setState({
+                    title: '',
+                });
+            }).catch(e => {
+                alert('Error: ');
+            });
+
+    };
+
     renderData() {
         var data = this.state.texts;
         return data.map((items, Id) =>
-            <CardNotes key={Id} data={items}/>,
+            <CardNotes key={Id} data={items} />,
         );
     }
-    sendNotes(){
-        alert('Evin')
-        // axios.post
-        this.renderData()
-    }
+
     renderInputForm() {
         return <View>
             <View style={styles.inputStyle}>
-                <TextInput style={styles.textBox}
-                           placeholderTextColor="#cccccc"
-                           multiline={true}
+                <TextInput placeholder="Write a note..." style={styles.textBox}
+                    placeholderTextColor="#cccccc"
+                    multiline={true}
+                    onChangeText={(title) => this.setState({ title })}
+                    value={this.state.title}
                 >
 
                 </TextInput>
                 <TouchableOpacity style={styles.click} onPress={() => this.sendNotes()}>
-                    <Icon name="send" size={35} color="white"/>
+                    <Icon name="send" size={35} color="white" />
 
                 </TouchableOpacity>
             </View>
@@ -62,21 +84,31 @@ class Rooms extends Component {
 
     render() {
         return (
-            <View style={{flex: 1, marginTop: 10}}>
-                <ScrollView
-                    style={styles.messagesMainDiv}
-                    ref={ref => {
-                        this.scrollView = ref;
-                    }}
-                    onContentSizeChange={() => this.scrollView.scrollToEnd({animated: false})}>
-                    {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 12, marginTop: 10 }}>
+                    <ScrollView
+                        style={styles.messagesMainDiv}
+                        ref={ref => {
+                            this.scrollView = ref;
+                        }}
+                        onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: false })}>
+                        {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
+                        {this.renderData()}
+                        {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
 
-                    {this.renderData()}
-                </ScrollView>
-                <View style={{borderTopColor:'green',borderStyle:'solid'}}>
-                    {this.renderInputForm()}
+                    </ScrollView>
+
+                </View>
+                <View style={{ flex: 1, marginTop: 10 }}>
+                    <KeyboardAvoidingView
+                        enabled={true}
+                        behavior="padding">
+                        {this.renderInputForm()}
+                    </KeyboardAvoidingView>
                 </View>
             </View>
+
+
         );
     }
 }
@@ -86,20 +118,21 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputStyle: {
-        flexDirection:'row',
+        flexDirection: 'row',
         flex: 1,
         padding: 0,
         paddingBottom: 90,
         marginBottom: 10,
+        alignItems: 'center',
 
     },
     textBox: {
         width: '80%',
-        height: 50,
+        height: 70,
         backgroundColor: 'white',
         margin: 8,
         borderWidth: 1,
-        borderRadius: 10,
+        borderRadius: 20,
         borderColor: '#cccccc',
         textAlignVertical: 'top',
         color: '#5a004b',
@@ -113,8 +146,8 @@ const styles = StyleSheet.create({
         height: 50,
         padding: 5,
         borderRadius: 50,
-        width:50,
-        paddingTop:7,
+        width: 50,
+        paddingTop: 7,
         margin: 4,
         alignItems: 'flex-end',
         backgroundColor: '#167726'

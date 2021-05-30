@@ -62,16 +62,18 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingLeft: 20,
         backgroundColor: '#FFF',
-        width: '85%',
+        width: '90%',
         flex: 1,
         alignSelf: 'flex-start',
         flexDirection: 'row',
         borderWidth: 0,
-        borderRadius: 5,
+        borderTopLeftRadius: 25,
+        borderBottomLeftRadius:25,
         right: 0,
         minHeight: 50,
         maxHeight: 100,
     },
+    
 
 });
 
