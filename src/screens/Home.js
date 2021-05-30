@@ -182,6 +182,7 @@ class Home extends Component {
                         sayac: 1,
                         loading: false,
                         download_link: response.data.download_link,
+                        removestate: false,
                     });
                     Alert.alert("Warning", "Do you want to download the file?",
                         [{ text: "Cancel", style: "cancel" },
