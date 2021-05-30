@@ -1,6 +1,17 @@
 import React, { Component, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Dimensions, Alert, ActivityIndicator, Linking } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+    TextInput,
+    Dimensions,
+    Alert,
+    ActivityIndicator,
+    Linking
+} from 'react-native';
 import Card from '.././components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -8,6 +19,7 @@ import Animated from 'react-native-reanimated';
 import DocumentPicker from 'react-native-document-picker';
 import StickyParallaxHeader from 'react-native-sticky-parallax-header';
 import RNFetchBlob from 'rn-fetch-blob';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -27,7 +39,7 @@ class Home extends Component {
             id: '',
             removestate: true,
             sayac: 1,
-            time: 20,
+            time: 180,
             timerstate: false,
 
         };
@@ -95,7 +107,6 @@ class Home extends Component {
 
     componentDidMount() {
         this.getDatas();
-
     }
     update = () => {
         if (this.state.time === 0) {
@@ -110,9 +121,7 @@ class Home extends Component {
             });
         }
     };
-    async t(){
 
-    }
     secondsToMinutes = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = time - minutes * 60;
@@ -124,7 +133,7 @@ class Home extends Component {
         );
     };
 
-    async cardBottomSheet(value) {
+    cardBottomSheet(value) {
         if (value > 0) {
 
             this.setState({
@@ -133,24 +142,27 @@ class Home extends Component {
                 id: value,
                 removestate: true,
                 sayac: 1,
+                time:180,
                 timerstate: false,
             })
             this.bs.current.snapTo(0);
-
         }
     }
-
-    async download(id) {
+    
+    download(id) {
         if (this.state.password_Download) {
-            if (this.state.sayac === 2) {
+            if (this.state.sayac === 4) {
                 this.setState({
+                    time:180,
                     timerstate: true,
                 })
+
                 Alert.alert("Error", "Please wait...")
-                const timer = setInterval(() => this.update(), 1000);
+                const timer = setInterval(() => this.update(), 1500);
                 return () => {
                     clearInterval(timer);
                 };
+
             }
             let header = {
                 headers: {
@@ -159,11 +171,9 @@ class Home extends Component {
             };
             const data = new FormData();
             data.append('password', this.state.password_Download);
-            this.setState({ loading: true });
             axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
                 .then(response => {
                     this.setState({
-                        loading: false,
                         sayac: 1,
                         download_link: response.data.download_link,
                     });
@@ -178,7 +188,7 @@ class Home extends Component {
                     this.setState({
                         password_Download: '',
                         loading: false,
-                        sayac:this.state.sayac+1,
+                        sayac: this.state.sayac + 1,
                     });
                 });
         }
@@ -344,12 +354,16 @@ class Home extends Component {
                             <Text style={styles.panelButtonTitle}>Share Here</Text>
                         </TouchableOpacity>
                     </Animated.View>
+
                     {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
                     {this.renderData()}
                 </ScrollView>
             </View>
         );
+
     }
+
+
 }
 
 const styles = StyleSheet.create({
