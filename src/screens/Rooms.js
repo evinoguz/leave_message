@@ -120,24 +120,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: 1,
         padding: 0,
-        marginBottom: 5,
-        alignItems: 'center',
+        marginBottom: 20,
+        alignSelf: 'center',
     },
     textBox: {
-        width: '80%',
-        height: 40,
+        width: '85%',
+        height: 60,
         backgroundColor: 'white',
-        margin: 8,
+        margin: 1,
         borderWidth: 1,
         borderRadius: 20,
         borderColor: '#cccccc',
         textAlignVertical: 'top',
         color: '#5a004b',
         paddingLeft: 10,
-
     },
     messagesMainDiv: {
-        minHeight: '90%',
+        minHeight: '95%',
     },
 
     click: {
@@ -148,7 +147,7 @@ const styles = StyleSheet.create({
         paddingTop: 7,
         margin: 4,
         alignItems: 'flex-end',
-        backgroundColor: '#167726'
+        backgroundColor: '#009387'
     },
 });
 
