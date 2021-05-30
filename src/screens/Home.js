@@ -20,6 +20,7 @@ import DocumentPicker from 'react-native-document-picker';
 import StickyParallaxHeader from 'react-native-sticky-parallax-header';
 import RNFetchBlob from 'rn-fetch-blob';
 import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { registerCustomIconType } from 'react-native-elements';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -39,7 +40,7 @@ class Home extends Component {
             id: '',
             removestate: true,
             sayac: 1,
-            time: 180,
+            time: 20,
             timerstate: false,
 
         };
@@ -113,6 +114,7 @@ class Home extends Component {
             this.setState({
                 sayac: 1,
                 timerstate: false,
+                time:20,
             });
         }
         else {
@@ -141,9 +143,6 @@ class Home extends Component {
                 download_link: '',
                 id: value,
                 removestate: true,
-                sayac: 1,
-                time:180,
-                timerstate: false,
             })
             this.bs.current.snapTo(0);
         }
@@ -151,9 +150,9 @@ class Home extends Component {
     
     download(id) {
         if (this.state.password_Download) {
-            if (this.state.sayac === 4) {
+            if (this.state.sayac === 2) {
                 this.setState({
-                    time:180,
+                    time:20,
                     timerstate: true,
                 })
 
