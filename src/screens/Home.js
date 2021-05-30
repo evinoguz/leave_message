@@ -179,7 +179,7 @@ class Home extends Component {
                     });
                     Alert.alert("Warning", "Do you want to download the file?",
                         [{ text: "Cancel", style: "cancel" },
-                        { text: "Download", onPress: () => { this.filedowload() } }
+                        { text: "Download", onPress: () => { this.loadInBrowser(this.state.download_link) } }
                         ]);
 
                 }
@@ -197,8 +197,17 @@ class Home extends Component {
         }
 
     }
-
-    filedowload = () => {
+    loadInBrowser = (url) => {
+        Linking.canOpenURL(url).then(supported => {
+            if (supported) {
+                Linking.openURL(url);
+                this.bs.current.snapTo(1);
+            } else {
+                console.log("Don't know how to open URI: " + url);
+            }
+        });
+    };
+   /* filedowload = () => {
         this.setState({
             removestate: false,
         });
@@ -220,7 +229,7 @@ class Home extends Component {
             console.log('do some magic in here');
         });
     };
-
+*/
     remove(id) {
         if (this.state.download_link) {
             Alert.alert("Warning", "Would you like to delete a file?",
