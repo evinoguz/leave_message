@@ -116,16 +116,17 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     inputStyle: {
-        height:60,
+        height:55,
         flexDirection: 'row',
         flex: 1,
         padding: 0,
-        marginBottom: 20,
+        marginBottom: 10,
         alignSelf: 'center',
+        alignItems:'center'
     },
     textBox: {
         width: '85%',
-        height: 60,
+        height: 55,
         backgroundColor: 'white',
         margin: 1,
         borderWidth: 1,
