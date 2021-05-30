@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     youtubeCard: {
         padding: 20,
-        backgroundColor: '#167726',
+        backgroundColor: '#009387',
         marginBottom: 20,
         borderRadius:20,
         marginRight:20,

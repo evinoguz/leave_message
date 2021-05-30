@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 import axios from 'axios';
 import {
     View,
@@ -13,35 +13,35 @@ import {
     Dimensions,
     ActivityIndicator,
 } from 'react-native';
-import {Card, CardTitle, CardContent, CardAction, CardButton, CardImage} from 'react-native-cards';
+import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage } from 'react-native-cards';
 import prettyTime from './PrettyTime';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Animated from "react-native-reanimated";
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 class CardComponent extends Component {
     constructor() {
         super();
         this.state = {
-            input: '',
+            user: false,
         };
     }
 
     render() {
-        const {small, shadowless, children, color, style, ...props} = this.props;
+        const { small, shadowless, children, color, style, ...props } = this.props;
 
         return (
             <TouchableOpacity {...props}>
                 {children}
-                <Card style={styles.listItem}>
-                    <Text style={{width: '50%', fontSize: 15}}>
+                <Card style={[styles.listItem, this.state.user ? styles.listItemTrue : styles.listItemFalse]}>
+                    <Text style={{ width: '50%', fontSize: 15 }}>
                         {this.props.data.title.slice(0, 25)}
                     </Text>
-                    <View style={{flexDirection: 'row', paddingTop: 40, paddingLeft: 70, alignItems: 'flex-end'}}>
-                        <Icon name="clock-outline" size={15} style={{paddingRight: 5}}/>
-                        <Text style={{width: '50%', fontSize: 10}}>
+                    <View style={{ flexDirection: 'row', paddingTop: 40, paddingLeft: 70, alignItems: 'flex-end' }}>
+                        <Icon name="clock-outline" size={15} style={{ paddingRight: 5 }} />
+                        <Text style={{ width: '50%', fontSize: 10 }}>
                             {prettyTime(this.props.data.created_at)}
                         </Text>
                     </View>
@@ -64,17 +64,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         width: '90%',
         flex: 1,
-        alignSelf: 'flex-start',
         flexDirection: 'row',
         borderWidth: 0,
-        borderTopLeftRadius: 25,
-        borderBottomLeftRadius:25,
         right: 0,
         minHeight: 50,
         maxHeight: 100,
     },
-    
-
+    listItemTrue: {
+        alignSelf: 'flex-end',
+        backgroundColor: '#d4fbf2',
+        borderTopLeftRadius: 20,
+        borderBottomLeftRadius: 20,
+    },
+    listItemFalse: {
+        alignSelf: 'flex-start',
+        backgroundColor: '#e8fccf',
+        borderTopRightRadius: 20,
+        borderBottomRightRadius: 20,
+    },
 });
-
 export default CardComponent;
