@@ -266,16 +266,16 @@ class Home extends Component {
         data.append('id', id);
         data.append('password', this.state.password_Download);
         this.setState({ loading: true });
-        axios.post(`https://anonymupload.com/api/removeFile`, data, header)
-            .then(response => {
-                this.setState({
-                    loading: false,
-                });
-                Alert.alert("Warning", response.data.message),
-                    this.bs.current.snapTo(1);
-                this.getDatas();
-            }
-            );
+        axios
+          .post('https://www.anonymupload.com/api/removeFile', data, header)
+          .then(response => {
+            this.setState({
+              loading: false,
+            });
+            Alert.alert('Warning', response.data.message),
+              this.bs.current.snapTo(1);
+            this.getDatas();
+          });
     };
     renderData() {
         var data = this.state.files;
