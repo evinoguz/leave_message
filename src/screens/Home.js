@@ -25,206 +25,194 @@ import { registerCustomIconType } from 'react-native-elements';
 const { width, height } = Dimensions.get('screen');
 
 class Home extends Component {
-    constructor() {
-        super();
-        this.state = {
-            loading: false,
-            files: [],
-            file: '',
-            password: '',
-            title: '',
-            singleFile: null,
-            state: true,
-            download_link: '',
-            password_Download: '',
-            id: '',
-            removestate: true,
-            sayac: 1,
-            time: 180,
-            timerstate: false,
-
-        };
-    }
-
-    async openDocumentFile() {
-        try {
-            const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-            });
-            this.setState({ singleFile: res, state: false });
-        } catch (err) {
-            if (DocumentPicker.isCancel(err)) {
-            } else {
-                throw "Files error";
-            }
-        }
-    }
-
-    upload = () => {
-        let header = {
-            headers: {
-                'Content-Type': 'multipart/form-data; ',
-            },
-        };
-        const data = new FormData();
-        data.append('file', this.state.singleFile);
-        data.append('title', this.state.title);
-        data.append('password', this.state.password);
-        this.setState({ loading: true });
-        axios
-          .post('https://www.anonymupload.com/api', data, header)
-          .then(response => {
-            //alert(response.data.data.id);
-            this.getDatas();
-            this.setState({
-              file: '',
-              password: '',
-              title: '',
-              singleFile: null,
-              state: true,
-              loading: false,
-              id: '',
-            });
-          })
-          .catch(e => {
-            this.setState({
-              loading: false,
-            });
-            alert('Error: ');
-          });
-
+  constructor() {
+    super();
+    this.state = {
+      loading: false,
+      files: [],
+      file: '',
+      password: '',
+      title: '',
+      singleFile: null,
+      state: true,
+      download_link: '',
+      password_Download: '',
+      id: '',
+      removestate: true,
+      sayac: 1,
+      time: 180,
+      timerstate: false,
     };
+  }
 
-    getDatas() {
-        this.setState({
-            loading: true,
-        })
-        axios.get('https://www.anonymupload.com/api').then(response => {
-          this.setState({
-            loading: false,
-            files: response.data.files,
-          });
-        });
+  async openDocumentFile() {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+      this.setState({singleFile: res, state: false});
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+      } else {
+        throw 'Files error';
+      }
     }
+  }
 
-    componentDidMount() {
+  upload = () => {
+    let header = {
+      headers: {
+        'Content-Type': 'multipart/form-data; ',
+      },
+    };
+    const data = new FormData();
+    data.append('file', this.state.singleFile);
+    data.append('title', this.state.title);
+    data.append('password', this.state.password);
+    this.setState({loading: true});
+    axios
+      .post('https://www.anonymupload.com/api', data, header)
+      .then(response => {
+        //alert(response.data.data.id);
         this.getDatas();
-    }
-    update = () => {
-        if (this.state.time === 0) {
-            this.setState({
-                sayac: 1,
-                timerstate: false,
-            });
-        }
-        else {
-            this.setState({
-                time: this.state.time - 1,
-            });
-        }
-    };
-
-    secondsToMinutes = (time) => {
-        if (this.state.time === 0) {
-            this.setState({
-                sayac: 1,
-                timerstate: false,
-                time: 180
-            });
-        }
-        const minutes = Math.floor(time / 60);
-        const seconds = time - minutes * 60;
-        return (
-
-            (minutes < 10 ? '0' + minutes : minutes) +
-            ':' +
-            (seconds < 10 ? '0' + seconds : seconds)
-        );
-    };
-
-    cardBottomSheet(value) {
-        if (value > 0) {
-
-            this.setState({
-                password_Download: '',
-                download_link: '',
-                id: value,
-                removestate: true,
-            })
-            this.bs.current.snapTo(0);
-        }
-    }
-
-    download(id) {
-        if (this.state.password_Download) {
-            if (this.state.sayac === 4) {
-                this.setState({
-                    time: 180,
-                    timerstate: true,
-                })
-
-                Alert.alert("Error", "Please wait...")
-                const timer = setInterval(() => this.update(), 1500);
-                return () => {
-                    clearInterval(timer);
-                };
-
-            }
-            let header = {
-                headers: {
-                    'Content-Type': 'multipart/form-data; ',
-                },
-            };
-            const data = new FormData();
-            data.append('password', this.state.password_Download);
-            axios
-              .get(
-                'https://www.anonymupload.com/api/get/' + id,
-                data,
-                header,
-              )
-              .then(response => {
-                this.setState({
-                  sayac: 1,
-                  loading: false,
-                  download_link: response.data.download_link,
-                  removestate: false,
-                });
-                Alert.alert('Warning', 'Do you want to download the file?', [
-                  {text: 'Cancel', style: 'cancel'},
-                  {
-                    text: 'Download',
-                    onPress: () => {
-                      this.loadInBrowser(this.state.download_link);
-                    },
-                  },
-                ]);
-              })
-              .catch(error => {
-                Alert.alert('Warning', 'password is incorrect');
-                this.setState({
-                  password_Download: '',
-                  loading: false,
-                  sayac: this.state.sayac + 1,
-                });
-              });
-        }
-        else {
-            Alert.alert("Warning", "Please enter password")
-        }
-
-    }
-    loadInBrowser = (url) => {
-        Linking.canOpenURL(url).then(supported => {
-            if (supported) {
-                Linking.openURL(url);
-                this.bs.current.snapTo(1);
-            } else {
-                console.log("Don't know how to open URI: " + url);
-            }
+        this.setState({
+          file: '',
+          password: '',
+          title: '',
+          singleFile: null,
+          state: true,
+          loading: false,
+          id: '',
         });
-    };
-    /* filedowload = () => {
+      })
+      .catch(e => {
+        this.setState({
+          loading: false,
+        });
+        alert('Error: ');
+      });
+  };
+
+  getDatas() {
+    this.setState({
+      loading: true,
+    });
+    axios.get('https://www.anonymupload.com/api').then(response => {
+      this.setState({
+        loading: false,
+        files: response.data.files,
+      });
+    });
+  }
+
+  componentDidMount() {
+    this.getDatas();
+  }
+  update = () => {
+    if (this.state.time === 0) {
+      this.setState({
+        sayac: 1,
+        timerstate: false,
+      });
+    } else {
+      this.setState({
+        time: this.state.time - 1,
+      });
+    }
+  };
+
+  secondsToMinutes = time => {
+    if (this.state.time === 0) {
+      this.setState({
+        sayac: 1,
+        timerstate: false,
+        time: 180,
+      });
+    }
+    const minutes = Math.floor(time / 60);
+    const seconds = time - minutes * 60;
+    return (
+      (minutes < 10 ? '0' + minutes : minutes) +
+      ':' +
+      (seconds < 10 ? '0' + seconds : seconds)
+    );
+  };
+
+  cardBottomSheet(value) {
+    if (value > 0) {
+      this.setState({
+        password_Download: '',
+        download_link: '',
+        id: value,
+        removestate: true,
+      });
+      this.bs.current.snapTo(0);
+    }
+  }
+
+  download(id) {
+    if (this.state.password_Download) {
+      if (this.state.sayac === 4) {
+        this.setState({
+          time: 180,
+          timerstate: true,
+        });
+
+        Alert.alert('Error', 'Please wait...');
+        const timer = setInterval(() => this.update(), 1500);
+        return () => {
+          clearInterval(timer);
+        };
+      }
+      let header = {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      };
+      const data = new FormData();
+      data.append('password', this.state.password_Download);
+      axios
+        .get('https://www.anonymupload.com/api/get/' + id, data, header)
+        .then(response => {
+          this.setState({
+            sayac: 1,
+            loading: false,
+            download_link: response.data.download_link,
+            removestate: false,
+          });
+          Alert.alert('Warning', 'Do you want to download the file?', [
+            {text: 'Cancel', style: 'cancel'},
+            {
+              text: 'Download',
+              onPress: () => {
+                this.filedowload(this.state.download_link);
+              },
+            },
+          ]);
+        })
+        .catch(error => {
+          Alert.alert('Warning', 'password is incorrect');
+          this.setState({
+            password_Download: '',
+            loading: false,
+            sayac: this.state.sayac + 1,
+          });
+        });
+    } else {
+      Alert.alert('Warning', 'Please enter password');
+    }
+  }
+  /*loadInBrowser = url => {
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+        this.bs.current.snapTo(1);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };*/
+  filedowload = (url) => {
          this.setState({
              removestate: false,
          });
@@ -242,154 +230,161 @@ class Home extends Component {
              },
          };
  
-         config(options).fetch('GET', this.state.download_link).then((res) => {
+         config(options).fetch('GET', url).then((res) => {
              console.log('do some magic in here');
+             this.bs.current.snapTo(1);
          });
      };
- */
-    remove(id) {
-        if (this.state.download_link) {
-            Alert.alert("Warning", "Would you like to delete a file?",
-                [{ text: "No", style: "cancel" },
-                { text: "Yes", onPress: () => { this.getremove(id) } }
-                ]);
-        }
-
+ 
+  remove(id) {
+    if (this.state.download_link) {
+      Alert.alert('Warning', 'Would you like to delete a file?', [
+        {text: 'No', style: 'cancel'},
+        {
+          text: 'Yes',
+          onPress: () => {
+            this.getremove(id);
+          },
+        },
+      ]);
     }
-    getremove(id) {
-        let header = {
-            headers: {
-                'Content-Type': 'multipart/form-data; ',
-            },
-        };
-        const data = new FormData();
-        data.append('id', id);
-        data.append('password', this.state.password_Download);
-        this.setState({ loading: true });
-        axios
-          .post('https://www.anonymupload.com/api/removeFile', data, header)
-          .then(response => {
-            this.setState({
-              loading: false,
-            });
-            Alert.alert('Warning', response.data.message),
-              this.bs.current.snapTo(1);
-            this.getDatas();
-          });
+  }
+  getremove(id) {
+    let header = {
+      headers: {
+        'Content-Type': 'multipart/form-data; ',
+      },
     };
-    renderData() {
-        var data = this.state.files;
-        return data.map((items, Id) =>
-            <Card key={Id} data={items} onPress={() => this.cardBottomSheet(items.id)} />
-        );
-    }
-    renderInner = () => (
-        <View style={styles.panel}>
-            {this.state.timerstate && (
-                <Text style={{ color: '#cccccc', fontSize: 20, textAlign: 'center' }}>
-                    <ActivityIndicator size="small" color="#cccccc"></ActivityIndicator>
-                    {"  " + this.secondsToMinutes(this.state.time)}
-                </Text>
+    const data = new FormData();
+    data.append('id', id);
+    data.append('password', this.state.password_Download);
+    this.setState({loading: true});
+    axios
+      .post('https://www.anonymupload.com/api/removeFile', data, header)
+      .then(response => {
+        this.setState({
+          loading: false,
+        });
+        Alert.alert('Warning', response.data.message),
+          this.bs.current.snapTo(1);
+        this.getDatas();
+      });
+  }
+  renderData() {
+    var data = this.state.files;
+    return data.map((items, Id) => (
+      <Card
+        key={Id}
+        data={items}
+        onPress={() => this.cardBottomSheet(items.id)}
+      />
+    ));
+  }
+  renderInner = () => (
+    <View style={styles.panel}>
+      {this.state.timerstate && (
+        <Text style={{color: '#cccccc', fontSize: 20, textAlign: 'center'}}>
+          <ActivityIndicator size="small" color="#cccccc"></ActivityIndicator>
+          {'  ' + this.secondsToMinutes(this.state.time)}
+        </Text>
+      )}
+      <TextInput
+        secureTextEntry={true}
+        editable={this.state.removestate}
+        placeholder="Password"
+        placeholderTextColor="#cccccc"
+        autoCorrect={false}
+        style={styles.password}
+        onChangeText={password_Download => this.setState({password_Download})}
+        value={this.state.password_Download}
+      />
+      <TouchableOpacity
+        style={styles.panelDownload}
+        onPress={() => this.download(this.state.id)}>
+        <Text style={styles.panelButtonTitle}>Download</Text>
+      </TouchableOpacity>
 
-            )}
-            <TextInput secureTextEntry={true}
-                editable={this.state.removestate}
-                placeholder="Password"
-                placeholderTextColor="#cccccc"
-                autoCorrect={false}
-                style={styles.password}
-                onChangeText={(password_Download) => this.setState({ password_Download })}
-                value={this.state.password_Download}
-            />
+      <TouchableOpacity
+        disabled={this.state.removestate}
+        style={styles.panelRemove}
+        onPress={() => this.remove(this.state.id)}>
+        <Text style={styles.panelButtonTitle}>Remove</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
+
+  bs = React.createRef();
+  fall = new Animated.Value(1);
+
+  render() {
+    return (
+      <View style={{flex: 1, marginTop: 10}}>
+        <BottomSheet
+          ref={this.bs}
+          snapPoints={[330, 0]}
+          renderContent={this.renderInner}
+          renderHeader={this.renderHeader}
+          initialSnap={1}
+          callbackNode={this.fall}
+          enabledGestureInteraction={true}
+        />
+        <ScrollView>
+          <Animated.View
+            style={{
+              padding: 20,
+              borderRadius: 20,
+              backgroundColor: '#009387',
+              marginRight: 10,
+              marginLeft: 10,
+            }}>
+            <Text>{this.myFile}</Text>
+            <TextInput
+              placeholder="Share a youtube link or any text..."
+              style={styles.input}
+              numberOfLines={10}
+              multiline={true}
+              placeholderTextColor="#cccccc"
+              onChangeText={title => this.setState({title})}
+              value={this.state.title}></TextInput>
+
             <TouchableOpacity
-                style={styles.panelDownload}
-                onPress={() => this.download(this.state.id)}>
-                <Text style={styles.panelButtonTitle}>Download</Text>
+              style={styles.click}
+              onPress={() => this.openDocumentFile()}>
+              <Icon name="download" size={30} color="#000000" />
+              <Text>Drop file here or click to upload</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity disabled={this.state.removestate}
-                style={styles.panelRemove}
-                onPress={() => this.remove(this.state.id)}>
-                <Text style={styles.panelButtonTitle}>Remove</Text>
+            <Text style={{color: 'red', textAlign: 'center', fontSize: 12}}>
+              Share file with password (max:1GB)
+            </Text>
+            <TextInput
+              secureTextEntry={true}
+              autoCorrect={false}
+              placeholder="Password"
+              style={styles.password}
+              placeholderTextColor="#cccccc"
+              onChangeText={password => this.setState({password})}
+              value={this.state.password}></TextInput>
+            <TouchableOpacity onPress={() => this.upload()} style={styles.file}>
+              <Text style={styles.panelButtonTitle}>Share Here</Text>
             </TouchableOpacity>
+          </Animated.View>
 
-        </View>
+          {this.state.loading ? (
+            <ActivityIndicator size="large" color="#009387"></ActivityIndicator>
+          ) : null}
+          {this.renderData()}
+        </ScrollView>
+      </View>
     );
-
-    renderHeader = () => (
-        <View style={styles.header}>
-            <View style={styles.panelHeader}>
-                <View style={styles.panelHandle} />
-            </View>
-        </View>
-    );
-
-    bs = React.createRef();
-    fall = new Animated.Value(1);
-
-    render() {
-        return (
-
-            <View style={{ flex: 1, marginTop: 10 }}>
-                <BottomSheet
-                    ref={this.bs}
-                    snapPoints={[330, 0]}
-                    renderContent={this.renderInner}
-                    renderHeader={this.renderHeader}
-                    initialSnap={1}
-                    callbackNode={this.fall}
-                    enabledGestureInteraction={true}
-                />
-                <ScrollView>
-                    <Animated.View style={{
-                        padding: 20,
-                        borderRadius: 20,
-                        backgroundColor: '#009387',
-                        marginRight: 10,
-                        marginLeft: 10,
-                    }}>
-                        <Text>{this.myFile}</Text>
-                        <TextInput placeholder="Share a youtube link or any text..." style={styles.input}
-                            numberOfLines={10}
-                            multiline={true}
-                            placeholderTextColor="#cccccc"
-                            onChangeText={(title) => this.setState({ title })}
-                            value={this.state.title}
-
-                        >
-                        </TextInput>
-
-                        <TouchableOpacity style={styles.click} onPress={() => this.openDocumentFile()}>
-                            <Icon name="download" size={30} color="#000000" />
-                            <Text>
-                                Drop file here or click to upload
-                        </Text>
-                        </TouchableOpacity>
-                        <Text style={{ color: 'red', textAlign: 'center', fontSize: 12 }}>Share file with password
-                        (max:1GB)</Text>
-                        <TextInput secureTextEntry={true}
-                            autoCorrect={false}
-                            placeholder="Password" style={styles.password}
-                            placeholderTextColor="#cccccc"
-                            onChangeText={(password) => this.setState({ password })}
-                            value={this.state.password}
-
-                        >
-                        </TextInput>
-                        <TouchableOpacity onPress={() => this.upload()} style={styles.file}>
-                            <Text style={styles.panelButtonTitle}>Share Here</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-
-                    {this.state.loading ? <ActivityIndicator size="large" color="#009387"></ActivityIndicator> : null}
-                    {this.renderData()}
-                </ScrollView>
-            </View>
-        );
-
-    }
-
-
+  }
 }
 
 const styles = StyleSheet.create({
