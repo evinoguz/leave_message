@@ -232,7 +232,6 @@ class Home extends Component {
  
          config(options).fetch('GET', url).then((res) => {
              console.log('do some magic in here');
-             this.bs.current.snapTo(1);
          });
      };
  
