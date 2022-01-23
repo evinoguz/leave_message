@@ -11,25 +11,24 @@ class Youtubes extends Component {
     constructor() {
         super();
         this.state = {
-            youtubes: [],
+            youtube: [],
             loading: false,
         };
     }
 
     componentDidMount() {
         this.setState({loading: true});
-        axios.get(`https://anonymupload.com/api`)
-            .then(response => {
-                this.setState({
-                    youtubes: response.data.youtubes,
-                    loading: false,
-                });
-            });
+        axios.get('https://www.anonymupload.com/api').then(response => {
+          this.setState({
+            youtube: response.data.youtube,
+            loading: false,
+          });
+        });
 
     }
 
     renderData() {
-        var data = this.state.youtubes;
+        var data = this.state.youtube;
         return data.map((items, Id) =>
             <View style={styles.youtubeCard}>
                 <YoutubePlayer

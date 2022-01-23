@@ -177,28 +177,37 @@ class Home extends Component {
             };
             const data = new FormData();
             data.append('password', this.state.password_Download);
-            axios.post(`https://anonymupload.com/api/` + id + '/password', data, header)
-                .then(response => {
-                    this.setState({
-                        sayac: 1,
-                        loading: false,
-                        download_link: response.data.download_link,
-                        removestate: false,
-                    });
-                    Alert.alert("Warning", "Do you want to download the file?",
-                        [{ text: "Cancel", style: "cancel" },
-                        { text: "Download", onPress: () => { this.loadInBrowser(this.state.download_link) } }
-                        ]);
-
-                }
-                ).catch(error => {
-                    Alert.alert("Warning", "password is incorrect");
-                    this.setState({
-                        password_Download: '',
-                        loading: false,
-                        sayac: this.state.sayac + 1,
-                    });
+            axios
+              .get(
+                'https://www.anonymupload.com/api/get/' + id,
+                data,
+                header,
+              )
+              .then(response => {
+                this.setState({
+                  sayac: 1,
+                  loading: false,
+                  download_link: response.data.download_link,
+                  removestate: false,
                 });
+                Alert.alert('Warning', 'Do you want to download the file?', [
+                  {text: 'Cancel', style: 'cancel'},
+                  {
+                    text: 'Download',
+                    onPress: () => {
+                      this.loadInBrowser(this.state.download_link);
+                    },
+                  },
+                ]);
+              })
+              .catch(error => {
+                Alert.alert('Warning', 'password is incorrect');
+                this.setState({
+                  password_Download: '',
+                  loading: false,
+                  sayac: this.state.sayac + 1,
+                });
+              });
         }
         else {
             Alert.alert("Warning", "Please enter password")
