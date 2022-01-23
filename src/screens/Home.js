@@ -71,39 +71,40 @@ class Home extends Component {
         data.append('title', this.state.title);
         data.append('password', this.state.password);
         this.setState({ loading: true });
-        axios.post(`https://anonymupload.com/api`, data, header)
-            .then(response => {
-                //alert(response.data.data.id);
-                this.getDatas();
-                this.setState({
-                    file: '',
-                    password: '',
-                    title: '',
-                    singleFile: null,
-                    state: true,
-                    loading: false,
-                    id: '',
-                });
-            }).catch(e => {
-                this.setState({
-                    loading: false,
-                })
-                alert('Error: ');
+        axios
+          .post('https://www.anonymupload.com/api', data, header)
+          .then(response => {
+            //alert(response.data.data.id);
+            this.getDatas();
+            this.setState({
+              file: '',
+              password: '',
+              title: '',
+              singleFile: null,
+              state: true,
+              loading: false,
+              id: '',
             });
+          })
+          .catch(e => {
+            this.setState({
+              loading: false,
+            });
+            alert('Error: ');
+          });
 
     };
 
     getDatas() {
         this.setState({
-            isLoading: true,
+            loading: true,
         })
-        axios.get(`https://anonymupload.com/api`)
-            .then(response => {
-                this.setState({
-                    loading: false,
-                    files: response.data.files,
-                });
-            });
+        axios.get('https://www.anonymupload.com/api').then(response => {
+          this.setState({
+            loading: false,
+            files: response.data.files,
+          });
+        });
     }
 
     componentDidMount() {

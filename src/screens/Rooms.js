@@ -23,13 +23,12 @@ class Rooms extends Component {
 
     getDatas() {
         this.setState({ loading: true });
-        axios.get(`https://anonymupload.com/api`)
-            .then(response => {
-                this.setState({
-                    texts: response.data.texts,
-                    loading: false,
-                });
-            });
+        axios.get('https://www.anonymupload.com/api').then(response => {
+          this.setState({
+            texts: response.data.texts,
+            loading: false,
+          });
+        });
     }
 
     componentDidMount() {
@@ -43,21 +42,29 @@ class Rooms extends Component {
         };
         const data = new FormData();
         data.append('title', this.state.title);
-        axios.post(`https://anonymupload.com/api`, data, header)
-            .then(response => {
-                this.getDatas();
-                this.setState({
-                    title: '',
-                });
-            }).catch(e => {
-                alert('Error: ');
+        this.setState({loading: true});
+        axios
+          .post('https://www.anonymupload.com/api', data, header)
+          .then(response => {
+            this.getDatas();
+            this.setState({
+              title: '',
+              loading: false,
             });
+          })
+          .catch(e => {
+            this.setState({
+              loading: false,
+            });
+            alert('Error: ');
+          });
 
     };
 
     renderData() {
         var data = this.state.texts;
-        return data.map((items, Id) =>
+        var reverseData=data.reverse();
+        return reverseData.map((items, Id) =>
             <CardNotes key={Id} data={items} />,
         );
     }
