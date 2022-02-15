@@ -20,8 +20,10 @@ import Animated from 'react-native-reanimated';
 //import {AsyncStorage} from '@react-native-async-storage/async-storage';
 import {registerCustomIconType} from 'react-native-elements';
 //import {APP_URL, ACCESS_TOKEN} from 'react-native-dotenv';
-import {APP_URL, ACCESS_TOKEN} from '_/api';
+import {APP_URL} from '_/api';
+import {AuthContext} from '_/AuthContext';
 class Mypost extends Component {
+  static contextType = AuthContext;
   constructor() {
     super();
     this.state = {
@@ -34,11 +36,12 @@ class Mypost extends Component {
     this.setState({
       loading: true,
     });
-   
+
+    let access_token = this.context.cookie;
     let header = {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + ACCESS_TOKEN,
+        'Content-Type': 'multipart/form-data; ',
+        'Authorization': 'Bearer ' + access_token,
       },
     };
     axios
@@ -57,12 +60,7 @@ class Mypost extends Component {
   }
   renderData() {
     var data = this.state.files;
-    const item = ({item, index}) => (
-      <MyFileCard
-        key={index}
-        data={item}
-      />
-    );
+    const item = ({item, index}) => <MyFileCard key={index} data={item} />;
     return (
       <FlatList
         data={data}
@@ -70,7 +68,6 @@ class Mypost extends Component {
         keyExtractor={(d, i) => i.toString()}
       />
     );
-
   }
   componentDidMount() {
     this.getDatas();
@@ -83,6 +80,7 @@ class Mypost extends Component {
           <ActivityIndicator size="large" color="#009387"></ActivityIndicator>
         ) : null}
         {this.renderData()}
+        {!this.state.files ? <Text>no data</Text> : null}
       </View>
     );
   }

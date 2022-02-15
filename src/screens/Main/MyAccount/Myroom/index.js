@@ -7,9 +7,10 @@ import {
   FlatList,
 } from 'react-native';
 import MyRoomCard from '_components/MyRoomCard';
-import {APP_URL, ACCESS_TOKEN} from '_/api';
-
+import {APP_URL} from '_/api';
+import {AuthContext} from '_/AuthContext';
 class Myroom extends Component {
+  static contextType = AuthContext;
   constructor() {
     super();
     this.state = {
@@ -21,19 +22,29 @@ class Myroom extends Component {
 
   getDatas() {
     this.setState({loading: true});
-     let header = {
-       headers: {
-         'Content-Type': 'application/json',
-         Authorization: 'Bearer ' + ACCESS_TOKEN,
-       },
-     };
-     axios.get(APP_URL + '/api/my-posts', header)
-     .then(response => {
-       this.setState({
-         texts: response.data.texts,
-         loading: false,
-       });
-     });
+    let access_token = this.context.cookie;
+    let header = {
+      headers: {
+        'Content-Type': 'multipart/form-data; ',
+        'Authorization': 'Bearer ' + access_token,
+      },
+    };
+    axios
+      .get(APP_URL + '/api/my-posts', header)
+      .then(response => {
+        this.setState({
+          texts: response.data.texts,
+          loading: false,
+        });
+        if (!this.state.texts) {
+          Alert.alert('Warning', 'You have no posts');
+        }
+      })
+      .catch(e => {
+        this.setState({
+          loading: false,
+        });
+      });
   }
 
   componentDidMount() {
@@ -60,6 +71,7 @@ class Myroom extends Component {
             <ActivityIndicator size="large" color="#009387"></ActivityIndicator>
           ) : null}
           {this.renderData()}
+          {!this.state.texts ? <Text>no data</Text> : null}
         </View>
       </View>
     );

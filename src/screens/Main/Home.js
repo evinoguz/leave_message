@@ -21,8 +21,9 @@ import DocumentPicker from 'react-native-document-picker';
 import {AsyncStorage} from '@react-native-async-storage/async-storage';
 import {registerCustomIconType} from 'react-native-elements';
 import {APP_URL} from '_/api';
-
+import {AuthContext} from '_/AuthContext';
 class Home extends Component {
+  static contextType = AuthContext;
   constructor() {
     super();
     this.state = {
@@ -58,15 +59,31 @@ class Home extends Component {
   }
 
   upload = () => {
-    let header = {
-      headers: {
-        'Content-Type': 'multipart/form-data; ',
-      },
-    };
-    const data = new FormData();
-    if (this.state.singleFile) {
-      data.append('file', this.state.singleFile);
+    let access_token = this.context.cookie;
+    let header=null;
+    if(access_token){
+      header = {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+          'Authorization': 'Bearer ' + access_token,
+        },
+      };
     }
+    else{
+      header = {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      };
+    }
+    /*let header = {
+        headers: {
+          'Content-Type': 'multipart/form-data; ',
+        },
+      };*/
+
+    const data = new FormData();
+    data.append('file', this.state.singleFile);
     data.append('title', this.state.title);
     data.append('password', this.state.password);
     this.setState({loading: true});
@@ -355,7 +372,7 @@ class Home extends Component {
               multiline={true}
               placeholderTextColor="#cccccc"
               onChangeText={title => this.setState({title})}
-              value={this.state.title ? this.state.title : ''}></TextInput>
+              value={this.state.title}></TextInput>
 
             <TouchableOpacity
               style={styles.click}
@@ -373,15 +390,12 @@ class Home extends Component {
               style={styles.password}
               placeholderTextColor="#cccccc"
               onChangeText={password => this.setState({password})}
-              value={
-                this.state.password ? this.state.password : ''
-              }></TextInput>
+              value={this.state.password}></TextInput>
 
             <TouchableOpacity onPress={() => this.upload()} style={styles.file}>
               <Text style={styles.panelButtonTitle}>Share Here</Text>
             </TouchableOpacity>
           </Animated.View>
-
           {this.state.loading ? (
             <ActivityIndicator size="large" color="#009387"></ActivityIndicator>
           ) : null}

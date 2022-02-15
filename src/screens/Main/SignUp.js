@@ -31,10 +31,6 @@ class SignUp  extends Component {
     };
   }
 
-  componentDidMount() {
-   
-  }
-
   register() {
     let header = {
       headers: {
@@ -55,10 +51,10 @@ class SignUp  extends Component {
           loading: false,
         });
         if (this.state.user) {
-          alert('Bilgi: Hesap oluşturuldu. Lütfen giriş yapınız');
+          alert('Info: Account created. Please login');
           this.props.navigation.navigate('SignIn');
         } else {
-          alert('Uyarı: Email zaten var.');
+          alert('Warning: Email already exists.');
         }
         
       })
@@ -66,7 +62,7 @@ class SignUp  extends Component {
         this.setState({
           loading: false,
         });
-        alert('Error: Lütfen verilerinizi kontrol edin');
+        alert('Error: Please check your data');
         
       });
   }

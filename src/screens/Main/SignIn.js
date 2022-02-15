@@ -18,8 +18,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import {useTheme} from 'react-native-paper';
 import {API_URL} from '_/api';
-
+import {AuthContext} from '_/AuthContext'
 class SignIn extends Component {
+  static contextType=AuthContext;
   constructor() {
     super();
     this.state = {
@@ -31,16 +32,12 @@ class SignIn extends Component {
       loading: false,
     };
   }
-
-  componentDidMount() {
-  }
-
+  
   getUser() {
     this.setState({loading: true});
     let header = {
       headers: {
         'Content-Type': 'multipart/form-data; ',
-        //'Authorization': 'Bearer '+this.state.access_token,
       },
     };
     const data = new FormData();
@@ -57,14 +54,18 @@ class SignIn extends Component {
           loading: false,
         });
         if (this.state.user) {
-          alert(this.state.user.name + ', oturum açıldı.');
+          const authUser = {
+            email: this.state.user.email,
+            name: this.state.user.name,
+          };
+          this.context.toggleAuth(authUser);
+          this.context.toggleCookie(this.state.access_token);
+          alert(this.state.user.name + ', session opened successfully.');
           this.props.navigation.navigate('Home');
         } else {
-          alert('Error: Email veya şifre yanlış');
+          alert('Error: Email or password is incorrect');
           this.setState({
             loading: false,
-            email: '',
-            password: '',
           });
         }
       })
@@ -76,15 +77,17 @@ class SignIn extends Component {
         });
       });
   }
+
   login() {
     if (!this.state.email) {
-      alert('Uyarı: Lütfen Email giriniz.');
+      alert('Warning: Please enter your Email.');
     } else if (!this.state.password) {
-      alert('Uyarı: Lütfen Şifre giriniz.');
+      alert('Warning: Please enter Password.');
     } else {
       this.getUser();
     }
   }
+
   render() {
     return (
       <View style={styles.container}>

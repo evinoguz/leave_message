@@ -67,7 +67,7 @@ export function DrawerContent(props) {
               icon={({color, size}) => (
                 <Icon name="login" color={color} size={size} />
               )}
-              label="Login"
+              label="SignIn"
               onPress={() => {
                 props.navigation.navigate('SignIn');
               }}
