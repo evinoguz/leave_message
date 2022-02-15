@@ -4,13 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.brentvatne.react.ReactVideoPackage;
-import com.srfaytkn.reactnative.YouTubeSdkPackage;
-import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
-import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+import com.reactnativedocumentpicker.DocumentPickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -34,7 +29,6 @@ public class MainApplication extends Application implements ReactApplication {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
           return packages;
         }
 

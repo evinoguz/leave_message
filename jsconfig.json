@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "baseUrl": ".",
+        "module": "commonjs",
+        "paths": {
+            "_/*": [
+                "./src/*"
+            ],
+            "_screens": [
+                "./src/screens/index"
+            ],
+            "_components": [
+                "./src/components"
+            ],
+            "_MyAccount": [
+                "./src/screens/Main/MyAccount"
+            ],
+           
+        }
+    },
+    "exclude": [
+        "./node_modules"
+    ]
+}
